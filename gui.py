@@ -85,6 +85,7 @@ class Example(QWidget):
         # W tym miejscu 'pixel_colors' zawiera kolory wszystkich pikseli
         # print(image.width(), image.height())
         # print(pixel_colors[0:25])
+        print("Obraz wysyłany:")
         print(pixel_colors)
         return pixel_colors
 

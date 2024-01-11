@@ -35,7 +35,7 @@ def trening(pixels):
     # Tworzenie i trenowanie maszyn liniowych dla każdego piksela
     pixel_machines = [LinearPixelMachine() for _ in pixels]
     for i, pixel in enumerate(pixels):
-        pixel_machines[i].train(np.array(pixel) / 255.0, np.array(pixel) / 255.0, epochs=3000, learning_rate=0.01)
+        pixel_machines[i].train(np.array(pixel) / 255.0, np.array(pixel) / 255.0, epochs=10000, learning_rate=0.001)
         if i % 500 == 0:
             print(f"Pixel {i}, RGB: {pixel}")
 
@@ -64,6 +64,7 @@ def przetwarzaj(pixeltest):
 
     # Przedstawienie odtworzonych pikseli
     predicted_pixels_arranged = [(p, p, p) for p in predicted_pixels]
+    print("Obraz otrzymany:")
     print(predicted_pixels_arranged)
 
     # Zapisanie odtworzonych pikseli do pliku tekstowego
