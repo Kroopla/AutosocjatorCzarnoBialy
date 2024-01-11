@@ -1,5 +1,5 @@
 import numpy as np
-import gui
+import pickle
 
 
 class LinearPixelMachine:
@@ -22,7 +22,7 @@ class LinearPixelMachine:
         return np.where(prediction.sum() > (3 * 0.5), 1, 0)  # Prog 1.5, gdzie 3 to liczba kanałów
 
 
-def trening(pixels, pixeltest):
+def trening(pixels):
     # Przygotowanie danych dla wszystkich pikseli
     # pixels = [
     #     (255, 255, 255), (255, 255, 255), (255, 255, 255), (0, 0, 0), (255, 255, 255),
@@ -35,11 +35,16 @@ def trening(pixels, pixeltest):
     # Tworzenie i trenowanie maszyn liniowych dla każdego piksela
     pixel_machines = [LinearPixelMachine() for _ in pixels]
     for i, pixel in enumerate(pixels):
-        pixel_machines[i].train(np.array(pixel) / 255.0, np.array(pixel) / 255.0, epochs=1000, learning_rate=0.01)
+        pixel_machines[i].train(np.array(pixel) / 255.0, np.array(pixel) / 255.0, epochs=3000, learning_rate=0.01)
         if i % 500 == 0:
             print(f"Pixel {i}, RGB: {pixel}")
 
-    # def odszumianie(pixel_colors):
+    # Zapisanie wytrenowanych maszyn do pliku
+    with open('trained_pixel_machines.pkl', 'wb') as file:
+        pickle.dump(pixel_machines, file)
+
+
+def przetwarzaj(pixeltest):
     # pixeltest = [
     #     (255, 255, 255), (0, 0, 0), (255, 255, 255), (0, 0, 0), (0, 0, 0),
     #     (255, 255, 255), (255, 255, 255), (255, 255, 255), (255, 255, 255), (0, 0, 0),
@@ -48,12 +53,21 @@ def trening(pixels, pixeltest):
     #     (0, 0, 0), (255, 255, 255), (255, 255, 255), (0, 0, 0), (255, 255, 255)
     # ]
 
+    # Odczytanie wytrenowanych maszyn z pliku
+    with open('trained_pixel_machines.pkl', 'rb') as file:
+        trained_pixel_machines = pickle.load(file)
+
     # Używamy wytrenowanych maszyn do przewidzenia kolorów dla każdego piksela
     predicted_pixels = [machine.threshold(machine.predict(np.array(pixel) / 255.0)) for machine, pixel in
-                        zip(pixel_machines, pixeltest)]
+                        zip(trained_pixel_machines, pixeltest)]
     predicted_pixels = np.array(predicted_pixels) * 255  # Odwrotna normalizacja i ograniczenie wartości
 
     # Przedstawienie odtworzonych pikseli
     predicted_pixels_arranged = [(p, p, p) for p in predicted_pixels]
     print(predicted_pixels_arranged)
-    gui.Example.create_image_from_pixels(predicted_pixels_arranged)
+
+    # Zapisanie odtworzonych pikseli do pliku tekstowego
+    with open('predicted_pixels_arranged.txt', 'w') as file:
+        for pixel in predicted_pixels_arranged:
+            file.write(f'{pixel}\n')
+

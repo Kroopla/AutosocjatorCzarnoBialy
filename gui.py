@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QHBoxLay
 from PyQt5.QtGui import QPixmap, QColor, QImage
 import sys
 import neural_network
+import re
 
 
 class Example(QWidget):
@@ -29,11 +30,10 @@ class Example(QWidget):
         # Łączenie przycisków z funkcjami
         button1.clicked.connect(self.load_dom_images)
         button2.clicked.connect(self.load_drzewo_images)
-        # button3.clicked.connect(self.)
+        button3.clicked.connect(self.aktualizuj_label2)
         button4.clicked.connect(self.copy_image_from_label2_to_label1)
-        button5.clicked.connect(lambda: neural_network.trening(self.process_image("label1"),
-                                                               self.process_image("lebel2")))
-        # button6.clicked.connect(neural_network.trening(*self.odszumaj()))
+        button5.clicked.connect(lambda: neural_network.przetwarzaj(self.process_image("lebel2")))
+        button6.clicked.connect(lambda: neural_network.trening(self.process_image("label1")))
 
         # Dodawanie widżetów do układów
         hbox.addWidget(self.label1)
@@ -85,32 +85,45 @@ class Example(QWidget):
         # W tym miejscu 'pixel_colors' zawiera kolory wszystkich pikseli
         # print(image.width(), image.height())
         # print(pixel_colors[0:25])
+        print(pixel_colors)
         return pixel_colors
 
-    def create_image_from_pixels(pixel_values):
-        width = 50
-        height = 50
-        # Utworzenie pustego obrazu o wymiarach width x height
+    def aktualizuj_label2(self):
+        file_path = 'predicted_pixels_arranged.txt'
+        self.odszumiaj(self.label2, file_path)
+
+    def odszumiaj(self, label, file_path):
+        # Odczytanie wartości pikseli z pliku
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+
+        pixel_values = []
+        for line in lines:
+            # Konwersja linii tekstu na krotkę RGB
+            rgb_values = re.findall(r'\d+', line)
+            if rgb_values and len(rgb_values) == 3:
+                pixel_values.append(tuple(map(int, rgb_values)))
+
+        # Tworzenie obrazu
+        width, height = 50, 50
         image = QImage(width, height, QImage.Format_RGB32)
+
         if len(pixel_values) != width * height:
-            print("Liczba pikseli w tablicy nie odpowiada wymiarom obrazu.")
-            return None
+            print("Liczba pikseli w pliku nie odpowiada wymiarom obrazu 50x50.")
+            return
 
-        # Wypełnienie obrazu kolorami z tablicy
-        for y in range(height):
-            for x in range(width):
-                # Obliczenie indeksu dla jednowymiarowej tablicy
+        for y in range(width):
+            for x in range(height):
                 index = y * width + x
-                # Pobranie koloru (R, G, B) z tablicy
                 color = QColor(*pixel_values[index])
-                # Ustawienie koloru piksela
-                image.setPixelColor(x, y, color)
-                pixmap = QPixmap.fromImage(image)
-                pixel_values.label2.setPixmap(pixmap)
-                print("1")
-                QApplication.processEvents()
+                image.setPixelColor(y, x, color)
 
-        return image
+                # Aktualizacja label2 po każdej zmianie piksela
+                pixmap = QPixmap.fromImage(image)
+                label.setPixmap(pixmap)
+
+                # Odświeżenie aplikacji, aby pokazać zmiany w czasie rzeczywistym
+                QApplication.processEvents()
 
 
 def run():
