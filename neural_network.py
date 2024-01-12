@@ -18,7 +18,7 @@ class LinearPixelMachine:
         return input_pixel * self.weights + self.bias
 
     def threshold(self, prediction):
-        # Sumujemy wartości RGB i porównujemy z trzykrotnością połowy maksymalnej wartości
+        #Sumujemy wartości RGB i porównujemy z trzykrotnością połowy maksymalnej wartości
         return np.where(prediction.sum() > (3 * 0.5), 1, 0)  # Prog 1.5, gdzie 3 to liczba kanałów
 
 
