@@ -33,7 +33,7 @@ class Example(QWidget):
         button3.clicked.connect(self.aktualizuj_label2)
         button4.clicked.connect(self.copy_image_from_label2_to_label1)
         button5.clicked.connect(lambda: neural_network.przetwarzaj(self.process_image("lebel2")))
-        button6.clicked.connect(lambda: neural_network.trening(self.process_image("label1")))
+        button6.clicked.connect(lambda: neural_network.trening(self.process_training()))
 
         # Dodawanie widżetów do układów
         hbox.addWidget(self.label1)
@@ -57,6 +57,8 @@ class Example(QWidget):
         # Ładowanie obrazów 'Dom'
         self.label1.setPixmap(QPixmap('test.png'))
         self.label2.setPixmap(QPixmap('test_szum.png'))
+        # self.label1.setPixmap(QPixmap('150.png'))
+        # self.label2.setPixmap(QPixmap('150_szum.png'))
 
     def load_drzewo_images(self):
         # Ładowanie obrazów 'Drzewo'
@@ -81,6 +83,47 @@ class Example(QWidget):
             for y in range(image.height()):
                 color = image.pixelColor(x, y)
                 pixel_colors.append((color.red(), color.green(), color.blue()))
+
+        # W tym miejscu 'pixel_colors' zawiera kolory wszystkich pikseli
+        # print(image.width(), image.height())
+        # print(pixel_colors[0:25])
+        print("Obraz wysyłany:")
+        print(pixel_colors)
+        return pixel_colors
+
+    def process_training(self):
+        self.labelt1 = QLabel(self)
+        self.labelt2 = QLabel(self)
+        self.labelt3 = QLabel(self)
+        self.labelt4 = QLabel(self)
+        self.labelt5 = QLabel(self)
+
+        # Wybór odpowiedniego labela
+        labelp1 = self.labelt1.setPixmap(QPixmap('test.png'))
+        labelp2 = self.labelt2.setPixmap(QPixmap('2.png'))
+        labelp3 = self.labelt3.setPixmap(QPixmap('3.png'))
+        labelp4 = self.labelt4.setPixmap(QPixmap('4.png'))
+        labelp5 = self.labelt5.setPixmap(QPixmap('5.png'))
+
+        # Konwersja pixmapy do obiektu QImage
+        image1 = labelp1.pixmap().toImage()
+        print("test")
+        image2 = labelp2.pixmap().toImage()
+        image3 = labelp3.pixmap().toImage()
+        image4 = labelp4.pixmap().toImage()
+        image5 = labelp5.pixmap().toImage()
+        print("test")
+
+        images = [image1, image2, image3, image4, image5]
+        # Pusta tablica do przechowywania kolorów pikseli
+        pixel_colors = []
+
+        # Przechodzenie przez każdy piksel obrazu
+        for image in images:
+            for x in range(image.width()):
+                for y in range(image.height()):
+                    color = image.pixelColor(x, y)
+                    pixel_colors.append((color.red(), color.green(), color.blue()))
 
         # W tym miejscu 'pixel_colors' zawiera kolory wszystkich pikseli
         # print(image.width(), image.height())
