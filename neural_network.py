@@ -22,7 +22,7 @@ class LinearPixelMachine:
         return np.where(prediction.sum() > (3 * 0.5), 1, 0)  # Prog 1.5, gdzie 3 to liczba kanałów
 
 
-def trening(pixels):
+def trening(pixels, bad_pixels):
     # pixels = [
     #     (255, 255, 255), (255, 255, 255), (255, 255, 255), (0, 0, 0), (255, 255, 255),
     #     (255, 255, 255), (0, 0, 0), (255, 255, 255), (255, 255, 255), (255, 255, 255),
@@ -34,7 +34,8 @@ def trening(pixels):
     # Tworzenie i trenowanie maszyn liniowych dla każdego piksela
     pixel_machines = [LinearPixelMachine() for _ in pixels]
     for i, pixel in enumerate(pixels):
-        pixel_machines[i].train(np.array(pixel) / 255.0, np.array(pixel) / 255.0, epochs=100, learning_rate=0.01)
+        print(pixel)
+        pixel_machines[i].train(np.array(pixel) / 255.0, np.array(pixel) / 255.0, epochs=1000, learning_rate=0.01)
         if i % 500 == 0:
             print(f"Pixel {i}, RGB: {pixel}")
 
