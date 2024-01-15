@@ -34,7 +34,7 @@ class Example(QWidget):
         button4.clicked.connect(self.copy_image_from_label2_to_label1)
         button5.clicked.connect(lambda: neural_network.przetwarzaj(self.process_image("lebel2")))
         button6.clicked.connect(
-            lambda: neural_network.trening(self.process_training(False), self.process_training(True)))
+            lambda: neural_network.trening(self.process_training(True), self.process_training(False)))
 
         # Dodawanie widżetów do układów
         hbox.addWidget(self.label1)
@@ -63,8 +63,8 @@ class Example(QWidget):
 
     def load_drzewo_images(self):
         # Ładowanie obrazów 'Drzewo'
-        self.label1.setPixmap(QPixmap('Drzewo.png'))
-        self.label2.setPixmap(QPixmap('Drzewo_Szum.png'))
+        self.label1.setPixmap(QPixmap('2.png'))
+        self.label2.setPixmap(QPixmap('2_szum.png'))
 
     def copy_image_from_label2_to_label1(self):
         # Kopiowanie obrazu z label2 do label1
@@ -96,7 +96,8 @@ class Example(QWidget):
         filenames = []
         if has_humid:
             filenames = ['test.png', '2.png', '3.png', '4.png', '5.png']
-            else filenames = ['test_szum.png', '2.png_szum', '3.png_szum', '4_szum.png', '5_szum.png']
+        else:
+            filenames = ['test_szum.png', '2_szum.png', '3_szum.png', '4_szum.png', '5_szum.png']
         all_pixel_colors = []
         for filename in filenames:
             # Wczytanie obrazu z pliku
@@ -118,7 +119,6 @@ class Example(QWidget):
             # Dodawanie kolorów pikseli tego obrazu do głównej listy
         # with open("all_pixel_colors", "w") as plik:
         #     plik.write(all_pixel_colors)
-        print("test")
         return all_pixel_colors
 
     def aktualizuj_label2(self):
@@ -149,7 +149,7 @@ class Example(QWidget):
             for x in range(height):
                 index = y * width + x
                 color = QColor(*pixel_values[index])
-                image.setPixelColor(y, x, color)
+                image.setPixelColor(x, y, color)
 
                 # Aktualizacja label2 po każdej zmianie piksela
                 pixmap = QPixmap.fromImage(image)

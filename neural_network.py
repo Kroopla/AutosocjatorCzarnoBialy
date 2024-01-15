@@ -23,36 +23,21 @@ class LinearPixelMachine:
 
 
 def trening(pixels, bad_pixels):
-    # pixels = [
-    #     (255, 255, 255), (255, 255, 255), (255, 255, 255), (0, 0, 0), (255, 255, 255),
-    #     (255, 255, 255), (0, 0, 0), (255, 255, 255), (255, 255, 255), (255, 255, 255),
-    #     (0, 0, 0), (255, 255, 255), (255, 255, 255), (255, 255, 255), (255, 255, 255),
-    #     (255, 255, 255), (0, 0, 0), (255, 255, 255), (255, 255, 255), (0, 0, 0),
-    #     (255, 255, 255), (255, 255, 255), (255, 255, 255), (0, 0, 0), (255, 255, 255)
-    # ]
-
+    assert len(pixels) == len(bad_pixels), "Listy 'pixels' i 'bad_pixels' muszą mieć tę samą długość"
     # Tworzenie i trenowanie maszyn liniowych dla każdego piksela
     pixel_machines = [LinearPixelMachine() for _ in pixels]
-    for i, pixel in enumerate(pixels):
-        print(pixel)
-        pixel_machines[i].train(np.array(pixel) / 255.0, np.array(pixel) / 255.0, epochs=1000, learning_rate=0.01)
-        if i % 500 == 0:
+    for i, (pixel, bad_pixel) in enumerate(zip(pixels, bad_pixels)):
+        pixel_machines[i].train(np.array(bad_pixel) / 255.0, np.array(pixel) / 255.0, epochs=1000, learning_rate=0.1)
+        if i % 50 == 0:
             print(f"Pixel {i}, RGB: {pixel}")
 
     # Zapisanie wytrenowanych maszyn do pliku
     with open('trained_pixel_machines.pkl', 'wb') as file:
         pickle.dump(pixel_machines, file)
+    print("Koniec Treningu")
 
 
 def przetwarzaj(pixeltest):
-    # pixeltest = [
-    #     (255, 255, 255), (0, 0, 0), (255, 255, 255), (0, 0, 0), (0, 0, 0),
-    #     (255, 255, 255), (255, 255, 255), (255, 255, 255), (255, 255, 255), (0, 0, 0),
-    #     (0, 0, 0), (255, 255, 255), (0, 0, 0), (255, 255, 255), (255, 255, 255),
-    #     (255, 255, 255), (0, 0, 0), (255, 255, 255), (0, 0, 0), (0, 0, 0),
-    #     (0, 0, 0), (255, 255, 255), (255, 255, 255), (0, 0, 0), (255, 255, 255)
-    # ]
-
     # Odczytanie wytrenowanych maszyn z pliku
     with open('trained_pixel_machines.pkl', 'rb') as file:
         trained_pixel_machines = pickle.load(file)
